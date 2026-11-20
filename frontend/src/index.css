@@ -1,0 +1,248 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-heading: 'HelveticaNowDisplay-Medium', 'Helvetica Neue', Arial, sans-serif;
+  --font-body: 'HelveticaNowDisplayW01-Rg', 'Helvetica Neue', Arial, sans-serif;
+  color-scheme: dark;
+  font-family: var(--font-body);
+  background: #000;
+  color: #fff;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.chitti-avatar {
+  position: relative;
+  min-width: 0;
+  color: #fff;
+}
+
+.chitti-avatar-desktop {
+  display: flex;
+  width: 300px;
+  flex: 0 0 300px;
+  flex-direction: column;
+  align-items: center;
+}
+
+.chitti-avatar-mobile {
+  display: none;
+}
+
+.chitti-avatar-person {
+  position: relative;
+  width: 300px;
+  aspect-ratio: 790 / 1024;
+  flex: 0 0 auto;
+  cursor: pointer;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.chitti-avatar-person:focus-visible {
+  filter: drop-shadow(0 0 8px rgba(255, 149, 82, .8));
+}
+
+.chitti-avatar-art {
+  position: absolute;
+  inset: 0;
+  transform: rotate(var(--avatar-tilt, 0deg));
+  transform-origin: 50% 88%;
+  filter: drop-shadow(0 0 11px rgba(212, 87, 40, .25));
+}
+
+.chitti-avatar-character {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+}
+
+.chitti-avatar-mouth {
+  position: absolute;
+  left: 41.139%;
+  top: 39.258%;
+  width: 23.291%;
+  height: 13.672%;
+  object-fit: contain;
+  pointer-events: none;
+  transition: opacity 50ms linear;
+  user-select: none;
+}
+
+.chitti-avatar-ground-shadow {
+  position: absolute;
+  z-index: -1;
+  right: 17%;
+  bottom: 1.5%;
+  left: 17%;
+  height: 4%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(220, 100, 51, .38), rgba(0, 0, 0, 0) 72%);
+  filter: blur(7px);
+}
+
+.chitti-avatar-motion-enabled.chitti-avatar-person-idle .chitti-avatar-art {
+  animation: chitti-avatar-idle 5s ease-in-out infinite;
+}
+
+.chitti-avatar-person-listening .chitti-avatar-art {
+  transform: rotate(calc(var(--avatar-tilt, 0deg) - 2deg));
+  filter: drop-shadow(0 0 20px rgba(255, 124, 54, .58));
+}
+
+.chitti-avatar-person-listening::after {
+  position: absolute;
+  inset: 12% 9% 4%;
+  border: 1px solid rgba(255, 141, 74, .45);
+  border-radius: 48% 48% 42% 42%;
+  box-shadow: 0 0 18px rgba(255, 124, 54, .42);
+  content: "";
+  pointer-events: none;
+}
+
+.chitti-avatar-person-thinking .chitti-avatar-art {
+  transform: rotate(calc(var(--avatar-tilt, 0deg) + 2deg));
+  filter: drop-shadow(0 0 16px rgba(255, 153, 85, .42));
+}
+
+.chitti-avatar-person-speaking .chitti-avatar-art {
+  filter: drop-shadow(0 0 15px rgba(255, 120, 55, .4));
+}
+
+.chitti-avatar-bob-0 .chitti-avatar-art {
+  animation: chitti-avatar-bob-a 160ms ease-out;
+}
+
+.chitti-avatar-bob-1 .chitti-avatar-art {
+  animation: chitti-avatar-bob-b 160ms ease-out;
+}
+
+.chitti-avatar-caption {
+  min-height: 18px;
+  margin: 0;
+  color: rgba(255, 255, 255, .72);
+  font-size: 11px;
+  text-align: center;
+}
+
+@keyframes chitti-avatar-idle {
+  0%, 100% { transform: rotate(var(--avatar-tilt, 0deg)) scale(1); }
+  50% { transform: rotate(calc(var(--avatar-tilt, 0deg) + .4deg)) scale(1.012); }
+}
+
+@keyframes chitti-avatar-bob-a {
+  50% { transform: rotate(calc(var(--avatar-tilt, 0deg) - 1deg)) translateY(-3px); }
+}
+
+@keyframes chitti-avatar-bob-b {
+  50% { transform: rotate(calc(var(--avatar-tilt, 0deg) + 1deg)) translateY(-3px); }
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  min-width: 320px;
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  min-height: 100svh;
+  overflow-x: hidden;
+  background: #000;
+  font-family: var(--font-body);
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button,
+a,
+input,
+textarea,
+select {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, .85);
+  outline-offset: 3px;
+}
+
+.chat-message-input:focus-visible {
+  outline: none;
+  outline-offset: 0;
+}
+
+::selection {
+  color: #000;
+  background: #fff;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .3);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+
+  .chitti-avatar-art,
+  .chitti-avatar-mouth {
+    animation: none !important;
+  }
+
+  .chitti-avatar-person-listening .chitti-avatar-art,
+  .chitti-avatar-person-thinking .chitti-avatar-art {
+    transform: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .chitti-avatar-desktop {
+    display: none;
+  }
+
+  .chitti-avatar-mobile {
+    display: flex;
+    height: 178px;
+    flex: 0 0 178px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    overflow: hidden;
+  }
+
+  .chitti-avatar-mobile .chitti-avatar-person {
+    width: 120px;
+  }
+}

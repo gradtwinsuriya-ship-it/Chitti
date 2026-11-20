@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#000000">
+    <title>CHITTI-AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anta&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css?v=14">
+  </head>
+  <body>
+    <div class="ambient" aria-hidden="true">
+      <div class="ambient-floor"></div>
+      <div class="ambient-ring">
+        <div class="ambient-plate"></div>
+        <video
+          id="ambient-motion"
+          muted
+          loop
+          playsinline
+          preload="none"
+          data-src="https://d2ol7oe51mr4n9.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/6ad9485f-ab40-444b-bd3c-40dcb9bd0e2f.mp4"
+        ></video>
+      </div>
+    </div>
+    <main class="shell">
+      <header class="topbar">
+        <a class="wordmark" href="/" aria-label="Chitti home">
+          <span class="brand-mark" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 1.5 14.15 9.85 22.5 12l-8.35 2.15L12 22.5l-2.15-8.35L1.5 12l8.35-2.15L12 1.5Z" fill="#050505"/></svg>
+          </span>
+          <span class="brand-name">CHITTI</span>
+        </a>
+        <details class="nav-menu">
+          <summary class="menu-toggle" aria-label="Toggle navigation menu" title="Toggle navigation menu">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            </svg>
+          </summary>
+          <div class="topbar-actions">
+            <button id="memory-toggle" class="memory-toggle" type="button" aria-expanded="false" aria-controls="memory-panel">Memory</button>
+            <button id="knowledge-toggle" class="memory-toggle" type="button" aria-expanded="false" aria-controls="knowledge-panel">Sources</button>
+            <button id="tools-toggle" class="memory-toggle" type="button" aria-expanded="false" aria-controls="tools-panel">Tools</button>
+            <button id="voice-toggle" class="memory-toggle" type="button" aria-expanded="false" aria-controls="voice-panel">Voice</button>
+            <button id="vision-toggle" class="memory-toggle" type="button" aria-expanded="false" aria-controls="vision-panel">Vision</button>
+            <button id="settings-toggle" class="memory-toggle" type="button" aria-expanded="false" aria-controls="settings-panel">Settings</button>
+            <div class="connection"><span class="status-dot"></span><span>LOCAL SESSION</span></div>
+          </div>
+        </details>
+      </header>
+
+      <section class="workspace" aria-label="Chat with Chitti">
+        <div class="identity">
+          <div class="orb" aria-hidden="true"><span></span></div>
+          <div>
+            <p class="eyebrow">YOUR ASSISTANT</p>
+            <h1>At your service.</h1>
+          </div>
+        </div>
+
+        <div class="mode-row">
+          <span class="mode-label">RESPONSE MODE</span>
+          <div class="mode-switch" role="group" aria-label="Response mode">
+            <button class="mode-button selected" type="button" data-mode="reflex" aria-pressed="true">Reflex</button>
+            <button class="mode-button" type="button" data-mode="deliberate" aria-pressed="false">Deliberate</button>
+            <button class="mode-button" type="button" data-mode="deep_research" aria-pressed="false">Research</button>
+          </div>
+        </div>
+
+        <section id="memory-panel" class="memory-panel" aria-label="Personal memory" hidden>
+          <div class="memory-heading">
+            <div><p class="eyebrow">PERSONAL CONTEXT</p><h2>Memory</h2></div>
+            <a class="text-action" href="/api/memory/export">Export JSON</a>
+          </div>
+          <form id="note-form" class="note-form">
+            <label class="sr-only" for="memory-note">Save a note</label>
+            <input id="memory-note" maxlength="8000" placeholder="Save a note for later…" required>
+            <button type="submit">Save note</button>
+          </form>
+          <div class="document-row">
+            <label class="file-action" for="document-file">Add .txt or .md</label>
+            <input id="document-file" type="file" accept=".txt,.md,.markdown,text/plain,text/markdown">
+            <button id="delete-all" class="danger-action" type="button">Delete all</button>
+          </div>
+          <p id="memory-status" class="memory-status" role="status"></p>
+          <div id="memory-list" class="memory-list"></div>
+        </section>
+
+        <section id="knowledge-panel" class="memory-panel knowledge-panel" aria-label="Open knowledge sources" hidden>
+          <div class="memory-heading">
+            <div><p class="eyebrow">OPEN KNOWLEDGE</p><h2>Sources</h2></div>
+          </div>
+          <form id="knowledge-form" class="knowledge-form">
+            <label class="sr-only" for="knowledge-query">Topic to search</label>
+            <input id="knowledge-query" maxlength="300" placeholder="Search a topic to index…" required>
+            <label class="sr-only" for="knowledge-language">Wikipedia language</label>
+            <select id="knowledge-language" aria-label="Wikipedia language">
+              <option value="en">English</option>
+              <option value="ta">Tamil</option>
+              <option value="hi">Hindi</option>
+            </select>
+            <button type="submit">Index</button>
+          </form>
+          <p class="knowledge-note">Fetches up to 5 short extracts per request from Wikipedia. Nothing is indexed until you submit a search.</p>
+          <p id="knowledge-status" class="memory-status" role="status"></p>
+          <div id="knowledge-list" class="knowledge-list"></div>
+        </section>
+
+        <section id="tools-panel" class="memory-panel tools-panel" aria-label="Tools and actions" hidden>
+          <div class="memory-heading">
+            <div><p class="eyebrow">LOCAL UTILITIES</p><h2>Tools</h2></div>
+          </div>
+          <p id="tools-capabilities" class="knowledge-note"></p>
+          <div class="tool-section">
+            <h3>Calculator</h3>
+            <form id="calculate-form" class="tool-form">
+              <label class="sr-only" for="calculation">Arithmetic expression</label>
+              <input id="calculation" placeholder="(18 * 24) / 3" maxlength="500" required>
+              <button type="submit">Calculate</button>
+            </form>
+            <p id="calculation-result" class="tool-result" role="status"></p>
+          </div>
+          <div class="tool-section">
+            <h3>File search</h3>
+            <form id="file-search-form" class="tool-form">
+              <label class="sr-only" for="file-query">Search documents</label>
+              <input id="file-query" placeholder="Search your configured documents…" maxlength="200" required>
+              <button type="submit">Search</button>
+            </form>
+            <div id="file-results" class="tool-results"></div>
+          </div>
+          <div class="tool-section">
+            <h3>Weather</h3>
+            <form id="weather-form" class="tool-form">
+              <label class="sr-only" for="weather-place">City or place</label>
+              <input id="weather-place" placeholder="City or place" maxlength="100" required>
+              <button type="submit">Get weather</button>
+            </form>
+            <p id="weather-result" class="tool-result" role="status"></p>
+          </div>
+          <div class="tool-section">
+            <h3>Web search</h3>
+            <form id="web-search-form" class="tool-form">
+              <label class="sr-only" for="web-query">Search the web</label>
+              <input id="web-query" placeholder="Search the web (SearXNG required)" maxlength="300" required>
+              <button type="submit">Search</button>
+            </form>
+            <div id="web-results" class="tool-results"></div>
+          </div>
+          <div class="tool-section">
+            <h3>Reminders</h3>
+            <form id="reminder-form" class="tool-form reminder-form">
+              <label class="sr-only" for="reminder-task">Reminder</label>
+              <input id="reminder-task" placeholder="What should I remind you about?" maxlength="500" required>
+              <label class="sr-only" for="reminder-due">Reminder time</label>
+              <input id="reminder-due" type="datetime-local" required>
+              <button type="submit">Add reminder</button>
+            </form>
+            <p class="knowledge-note">Stored locally; no notification service is configured yet.</p>
+            <div id="reminder-list" class="tool-results"></div>
+          </div>
+          <div class="tool-section">
+            <h3>Email drafts</h3>
+            <form id="email-draft-form" class="draft-form">
+              <label class="sr-only" for="draft-recipient">Recipient</label>
+              <input id="draft-recipient" type="email" placeholder="Recipient email" maxlength="320" required>
+              <label class="sr-only" for="draft-subject">Subject</label>
+              <input id="draft-subject" placeholder="Subject" maxlength="300" required>
+              <label class="sr-only" for="draft-body">Draft body</label>
+              <textarea id="draft-body" placeholder="Draft body" maxlength="20000" rows="3" required></textarea>
+              <button type="submit">Save draft</button>
+            </form>
+            <p class="knowledge-note">Drafts are never sent by Chitti.</p>
+            <div id="draft-list" class="tool-results"></div>
+          </div>
+          <div class="tool-section">
+            <h3>Home Assistant</h3>
+            <form id="home-preview-form" class="tool-form home-form">
+              <label class="sr-only" for="home-entity">Allowlisted entity</label>
+              <input id="home-entity" placeholder="light.kitchen" maxlength="255" required>
+              <label class="sr-only" for="home-action">Action</label>
+              <select id="home-action" aria-label="Home Assistant action">
+                <option value="turn_on">Turn on</option>
+                <option value="turn_off">Turn off</option>
+              </select>
+              <button type="submit">Preview action</button>
+            </form>
+            <p id="home-status" class="tool-result" role="status"></p>
+            <button id="home-confirm" class="confirm-action" type="button" disabled>Confirm action</button>
+          </div>
+          <div class="tool-section">
+            <h3>Recent activity</h3>
+            <div id="tool-activity" class="tool-results"></div>
+          </div>
+        </section>
+
+        <section id="voice-panel" class="memory-panel voice-panel" aria-label="Voice controls" hidden>
+          <div class="memory-heading">
+            <div><p class="eyebrow">AUDIO</p><h2>Voice</h2></div>
+          </div>
+          <div class="voice-input-section">
+            <div class="voice-controls">
+              <label class="voice-select-label" for="voice-language">Transcription language</label>
+              <select id="voice-language">
+                <option value="auto">Auto detect</option>
+                <option value="en">English</option>
+                <option value="ta">Tamil</option>
+                <option value="hi">Hindi</option>
+              </select>
+              <button id="record-toggle" class="voice-action" type="button" aria-pressed="false">
+                <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a3 3 0 0 0-3 3v5a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3Zm-6 8a6 6 0 0 0 12 0M12 17v4m-4 0h8"/></svg>
+                <span>Start recording</span>
+              </button>
+            </div>
+            <p id="voice-status" class="memory-status" role="status">Microphone starts only when you press the button.</p>
+            <label class="voice-option">
+              <input id="wake-toggle" type="checkbox">
+              <span>Enable “Hey Chitti” wake phrase</span>
+            </label>
+            <p class="knowledge-note">Wake phrase is off by default. Browser speech recognition may send audio to the browser provider; push-to-talk transcription is sent to your local Whisper service.</p>
+          </div>
+          <div class="voice-output-section">
+            <label class="voice-option">
+              <input id="speak-replies" type="checkbox">
+              <span>Speak assistant replies</span>
+            </label>
+            <div class="voice-output-controls">
+              <label class="voice-select-label" for="speech-voice">System voice</label>
+              <select id="speech-voice" aria-label="System speech voice"></select>
+              <label class="voice-select-label" for="speech-rate">Rate</label>
+              <input id="speech-rate" type="range" min="0.7" max="1.3" step="0.1" value="1">
+              <button id="stop-speech" class="stop-speech" type="button" aria-label="Stop speaking" title="Stop speaking">
+                <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <section id="vision-panel" class="memory-panel vision-panel" aria-label="Vision controls" hidden>
+          <div class="memory-heading">
+            <div><p class="eyebrow">CAMERA</p><h2>Vision</h2></div>
+          </div>
+          <p id="vision-readiness" class="knowledge-note">Camera stays off until you start it. Images are analyzed on request and are not saved.</p>
+          <div class="vision-actions">
+            <button id="camera-start" class="vision-action" type="button">Start camera</button>
+            <button id="camera-stop" class="secondary-action" type="button" disabled>Stop camera</button>
+            <button id="camera-capture" class="secondary-action" type="button" disabled>Capture frame</button>
+            <label class="file-action" for="vision-file">Choose image</label>
+            <input id="vision-file" type="file" accept="image/jpeg,image/png,image/webp">
+          </div>
+          <div class="vision-preview" id="vision-preview" hidden>
+            <video id="camera-feed" autoplay playsinline muted hidden></video>
+            <img id="image-preview" alt="Selected image preview" hidden>
+          </div>
+          <div class="vision-options">
+            <label class="voice-option"><input id="vision-ocr" type="checkbox"><span>Read text (OCR)</span></label>
+            <label class="voice-option"><input id="vision-description" type="checkbox"><span>Describe scene</span></label>
+          </div>
+          <label class="vision-language-label" for="vision-ocr-language">OCR language</label>
+          <select id="vision-ocr-language" class="vision-language">
+            <option value="eng">English</option>
+            <option value="tam">Tamil</option>
+            <option value="hin">Hindi</option>
+          </select>
+          <button id="vision-analyze" class="vision-action analyze-action" type="button" disabled>Analyze image</button>
+          <p id="vision-status" class="memory-status" role="status"></p>
+          <div id="vision-results" class="vision-results" aria-live="polite"></div>
+          <p class="knowledge-note">Face recognition is disabled. Encrypted, opt-in family enrollment is not implemented.</p>
+        </section>
+
+        <section id="settings-panel" class="memory-panel settings-panel" aria-label="Dashboard settings" hidden>
+          <div class="memory-heading">
+            <div><p class="eyebrow">PREFERENCES</p><h2>Settings</h2></div>
+          </div>
+          <div class="settings-layout">
+            <section class="settings-group" aria-label="Assistant preferences">
+              <h3>Assistant</h3>
+              <label class="settings-field" for="settings-mode">Default response mode
+                <select id="settings-mode"><option value="reflex">Reflex</option><option value="deliberate">Deliberate</option><option value="deep_research">Deep Research</option></select>
+              </label>
+              <label class="settings-field" for="settings-language">Voice transcription language
+                <select id="settings-language">
+                  <option value="auto">Auto detect</option><option value="en">English</option><option value="ta">Tamil</option><option value="hi">Hindi</option>
+                </select>
+              </label>
+              <label class="voice-option"><input id="settings-speak" type="checkbox"><span>Speak replies</span></label>
+              <label class="settings-field" for="settings-voice">System voice
+                <select id="settings-voice"></select>
+              </label>
+              <label class="settings-field" for="settings-rate">Speech rate
+                <input id="settings-rate" type="range" min="0.7" max="1.3" step="0.1" value="1">
+              </label>
+              <button id="settings-reset" class="secondary-action" type="button">Reset preferences</button>
+            </section>
+            <section class="settings-group" aria-label="System status">
+              <h3>System status</h3>
+              <dl id="settings-summary" class="settings-summary"></dl>
+              <p class="knowledge-note">Provider credentials and endpoint URLs are not shown here.</p>
+              <p class="knowledge-note">Local SQLite data is not encrypted. This service has no authentication; do not expose it publicly.</p>
+            </section>
+          </div>
+          <p id="settings-status" class="memory-status" role="status"></p>
+        </section>
+
+        <section id="conversation" class="conversation" aria-live="polite" aria-label="Conversation">
+          <div class="empty-state" id="empty-state">
+            <span class="empty-mark" aria-hidden="true">C.</span>
+            <p>Ready when you are.</p>
+          </div>
+        </section>
+
+        <form id="chat-form" class="composer">
+          <label class="sr-only" for="message">Message Chitti</label>
+          <textarea id="message" name="message" rows="1" maxlength="8000" placeholder="Ask Chitti anything…" required></textarea>
+          <button id="send-button" class="send-button" type="submit" aria-label="Send message" title="Send message">
+            <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12 20 4l-5 16-3-7-8-1Zm8 1 8-9"/></svg>
+          </button>
+        </form>
+        <p class="footnote">Answers are generated by your configured model and may need verification.</p>
+      </section>
+    </main>
+    <script src="/static/app.js?v=14" defer></script>
+  </body>
+</html>

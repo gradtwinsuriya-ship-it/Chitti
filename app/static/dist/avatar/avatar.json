@@ -1,0 +1,32 @@
+{
+  "character": {
+    "file": "character.webp",
+    "fallback": "character.png",
+    "width": 790,
+    "height": 1024
+  },
+  "mouth": {
+    "canvas": [
+      184,
+      140
+    ],
+    "anchor": "top-centre",
+    "centerX": 417,
+    "top": 402,
+    "leftPct": 41.139,
+    "topPct": 39.258,
+    "widthPct": 23.291,
+    "heightPct": 13.672
+  },
+  "shapes": [
+    "neutral",
+    "smile",
+    "open",
+    "o_shape",
+    "talk",
+    "teeth_clench",
+    "ah",
+    "kiss",
+    "surprised"
+  ]
+}
